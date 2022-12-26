@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  db_hotels:
+    container_name: 'db_hotels'
+    ports:
+      - "5432:5432"
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: 'admin'
+      POSTGRES_USER: 'admin'
+      POSTGRES_DB: 'hotel'
