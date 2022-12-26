@@ -4,8 +4,14 @@ import com.hotelservice.hotelApi.models.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface RoomRepository extends JpaRepository<Room,Integer>{
+public interface RoomRepository extends JpaRepository<Room,Integer> {
+    Optional<Room> findByHotelIdAndNumber(String hotel_id, long number);
+    List<Room> findByHotelIdAndFreeTagTrue(String hotel_id);
+
+    List<Room> findByHotelIdAndFreeTagFalse(String hotel_id);
 
 }

@@ -11,8 +11,22 @@ import java.io.Serializable;
 @Setter
 @ToString
 @RequiredArgsConstructor
+@IdClass(id.class)
 
 public class AdditionalService {
     @Id
     private String name;
+    private String type;
+    private String description;
+    private long price;
+    private boolean enabled;
+    @Id
+    private String hotel_id;
+}
+
+@EqualsAndHashCode
+@NoArgsConstructor
+class id implements Serializable {
+    String hotel_id;
+    String name;
 }

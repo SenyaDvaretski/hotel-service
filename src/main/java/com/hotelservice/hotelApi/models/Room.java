@@ -11,8 +11,32 @@ import java.io.Serializable;
 @Getter
 @Setter
 @RequiredArgsConstructor
+@IdClass(room_id.class)
 public class Room {
+
+
     @Id
     private String number;
 
+    private String type;
+
+    private String description;
+
+    private boolean available;
+
+    private short beds_number;
+
+    private double price;
+
+    @Id
+    private String hotel_id;
+
+}
+
+
+@EqualsAndHashCode
+@NoArgsConstructor
+class room_id implements Serializable{
+    String hotel_id;
+    String number;
 }
