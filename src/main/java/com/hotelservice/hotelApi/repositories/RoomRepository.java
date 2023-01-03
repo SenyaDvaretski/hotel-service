@@ -6,12 +6,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface RoomRepository extends JpaRepository<Room,Integer> {
-    Optional<Room> findByHotelIdAndNumber(String hotel_id, long number);
-    List<Room> findByHotelIdAndFreeTagTrue(String hotel_id);
+public interface RoomRepository extends JpaRepository<Room, UUID> {
+    Optional<Room> findByHotelIdAndNumber(UUID hotel_id, int number);
+    List<Room> findByHotelIdAndAvailableTrue(UUID hotel_id);
 
-    List<Room> findByHotelIdAndFreeTagFalse(String hotel_id);
+    List<Room> findByHotelIdAndAvailableFalse(UUID hotel_id);
 
 }

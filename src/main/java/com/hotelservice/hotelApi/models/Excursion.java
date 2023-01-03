@@ -2,16 +2,22 @@ package com.hotelservice.hotelApi.models;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.io.Serializable;
+import lombok.experimental.Accessors;
+import java.util.UUID;
 
 @Entity(name="excursions")
-@Getter
-@ToString
-@RequiredArgsConstructor
+@Accessors(chain = true)
+@Data
 
 public class Excursion {
 
     @Id
-    private String hotel_id;
+    private UUID id;
+
+    private UUID hotel_id;
+    private String name;
+    private String description;
+    private double price;
+    private boolean enabled;
+
 }

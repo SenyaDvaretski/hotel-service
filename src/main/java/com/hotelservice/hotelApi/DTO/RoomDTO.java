@@ -2,10 +2,11 @@ package com.hotelservice.hotelApi.DTO;
 
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class RoomDTO {
 
-    private String hotel_id;
     private int number;
     private String type;
     private String description;

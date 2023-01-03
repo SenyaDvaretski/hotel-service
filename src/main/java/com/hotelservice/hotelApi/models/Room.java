@@ -5,38 +5,23 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.UUID;
 
-@Entity
+@Entity(name = "rooms")
 @Accessors(chain = true)
-@Getter
-@Setter
-@RequiredArgsConstructor
-@IdClass(room_id.class)
+@Data
 public class Room {
 
-
     @Id
-    private String number;
+    private UUID id;
 
+    @Column(name = "hotel_id")
+    private UUID hotelId;
+    private int number;
     private String type;
-
     private String description;
-
     private boolean available;
-
     private short beds_number;
-
     private double price;
 
-    @Id
-    private String hotel_id;
-
-}
-
-
-@EqualsAndHashCode
-@NoArgsConstructor
-class room_id implements Serializable{
-    String hotel_id;
-    String number;
 }
