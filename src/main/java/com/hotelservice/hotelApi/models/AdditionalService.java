@@ -1,6 +1,7 @@
 package com.hotelservice.hotelApi.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 import lombok.experimental.Accessors;
 import java.util.UUID;
@@ -12,11 +13,12 @@ import java.util.UUID;
 public class AdditionalService {
     @Id
     private UUID id;
-    private String hotel_id;
+    private UUID hotel_id;
 
     private String name;
     private String type;
     private String description;
+    @Min(value = 0, message = "Price should be positive")
     private double price;
     private boolean enabled;
 }

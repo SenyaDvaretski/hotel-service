@@ -1,6 +1,7 @@
 package com.hotelservice.hotelApi.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -21,7 +22,9 @@ public class Room {
     private String type;
     private String description;
     private boolean available;
+    @Min(value = 0, message = "Beds number should be positive")
     private short beds_number;
+    @Min(value = 0, message = "Price should be positive")
     private double price;
 
 }

@@ -103,15 +103,4 @@ public class HotelController {
         }
 
     }
-
-    @PatchMapping("/{hotel_name}")
-    public HttpStatus renameHotel(@PathVariable("hotel_name") String hotelName,
-                                  @RequestParam(name = "new_hotel_name") String newHotelName ){
-        try {
-            return hotelService.renameHotel(hotelName, newHotelName);
-        }catch (Exception e){
-            return HttpStatus.CONFLICT;
-        }
-    }
-
 }
