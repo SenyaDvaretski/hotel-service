@@ -13,8 +13,9 @@ import java.util.UUID;
 public class AdditionalService {
     @Id
     private UUID id;
-    private UUID hotel_id;
 
+    @Column(name = "hotel_id")
+    private UUID hotelId;
     private String name;
     private String type;
     private String description;

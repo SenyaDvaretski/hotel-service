@@ -15,7 +15,8 @@ public class Excursion {
     @Id
     private UUID id;
 
-    private UUID hotel_id;
+    @Column(name = "hotel_id")
+    private UUID hotelId;
     private String name;
     private String description;
     @Min(value = 0, message = "Price should be positive")

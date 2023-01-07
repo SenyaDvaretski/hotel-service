@@ -33,6 +33,6 @@ public class Hotel implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "hotel_id",updatable = false)
-    private List<AdditionalService> services = new ArrayList<>();
+    private List<AdditionalService> additionalServices = new ArrayList<>();
 
 }

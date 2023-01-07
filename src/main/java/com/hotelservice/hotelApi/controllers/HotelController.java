@@ -54,7 +54,7 @@ public class HotelController {
         }
     }
 
-    @PostMapping
+    @PostMapping(path = "/{hotel_name}")
     public HttpStatus addHotel(@RequestBody HotelDTO hotelDTO)
     {
         try

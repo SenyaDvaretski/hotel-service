@@ -28,6 +28,15 @@ public class HotelService {
         return hotelListMapper.toDTOList(hotelRepository.findAll()) ;
     }
 
+    public HotelDTO getHotel(String name){
+        Optional<Hotel> hotel = hotelRepository.findByName(name);
+        if(hotel.isPresent()){
+            return hotelMapper.toDTO(hotel.get());
+        }else{
+            return null;
+        }
+    }
+
     public void saveAll(List<HotelDTO> hotelDTOList) {
         hotelRepository.saveAll(hotelListMapper.toEntityList(hotelDTOList));
     }

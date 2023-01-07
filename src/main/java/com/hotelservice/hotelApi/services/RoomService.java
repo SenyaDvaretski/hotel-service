@@ -66,7 +66,7 @@ public class RoomService {
                     findByHotelIdAndNumber(hotel.get().getId(), roomDTO.getNumber());
             if(room.isPresent())
             {
-                roomMapper.updateRoomFromDto(roomDTO, room.get());
+                roomMapper.updateRoomFromDTO(roomDTO, room.get());
                 return HttpStatus.OK;
             }
 
