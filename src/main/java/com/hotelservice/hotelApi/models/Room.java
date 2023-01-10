@@ -2,10 +2,9 @@ package com.hotelservice.hotelApi.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-import lombok.*;
+import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.io.Serializable;
 import java.util.UUID;
 
 @Entity(name = "rooms")
@@ -14,6 +13,7 @@ import java.util.UUID;
 public class Room {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "hotel_id")

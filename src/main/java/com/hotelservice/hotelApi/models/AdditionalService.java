@@ -12,6 +12,7 @@ import java.util.UUID;
 
 public class AdditionalService {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "hotel_id")

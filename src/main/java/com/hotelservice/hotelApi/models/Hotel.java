@@ -16,6 +16,7 @@ import java.util.List;
 public class Hotel implements Serializable {
 
     @Id
+   // @GeneratedValue(strategy = GenerationType.IDENTITY)
     private UUID id;
 
     private String name;

@@ -13,6 +13,7 @@ import java.util.UUID;
 public class Excursion {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "hotel_id")

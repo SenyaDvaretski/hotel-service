@@ -39,7 +39,7 @@ public class HotelController {
     }
 
 
-    @PostMapping
+   /* @PostMapping
     public HttpStatus addHotels(@RequestBody List<HotelDTO> hotelDTOList)
     {
         try
@@ -52,9 +52,9 @@ public class HotelController {
             e.printStackTrace();
             return HttpStatus.BAD_REQUEST;
         }
-    }
+    }*/
 
-    @PostMapping(path = "/{hotel_name}")
+    @PostMapping
     public HttpStatus addHotel(@RequestBody HotelDTO hotelDTO)
     {
         try

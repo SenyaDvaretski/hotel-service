@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 
 /*
@@ -37,6 +38,7 @@ public class RoomService {
         Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
         Room room = roomMapper.toEntity(roomDTO);
         if(hotel.isPresent()){
+            room.setId(UUID.randomUUID());
             room.setHotelId(hotel.get().getId());
             roomRepository.save(room);
             return HttpStatus.CREATED;

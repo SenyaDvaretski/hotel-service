@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -21,7 +22,9 @@ public class HotelService {
     private HotelMapper hotelMapper;
 
     public void save(HotelDTO hotelDTO){
-        hotelRepository.save(hotelMapper.toEntity(hotelDTO));
+        Hotel hotel = hotelMapper.toEntity(hotelDTO);
+        hotel.setId(UUID.randomUUID());
+        hotelRepository.save(hotel);
     }
 
     public List<HotelDTO> getAll(){
@@ -38,7 +41,9 @@ public class HotelService {
     }
 
     public void saveAll(List<HotelDTO> hotelDTOList) {
-        hotelRepository.saveAll(hotelListMapper.toEntityList(hotelDTOList));
+        List<Hotel> hotelList = hotelListMapper.toEntityList(hotelDTOList);
+        hotelList.forEach(hotel -> hotel.setId(UUID.randomUUID()));
+        hotelRepository.saveAll(hotelList);
     }
 
     public void delete(Hotel hotel) {

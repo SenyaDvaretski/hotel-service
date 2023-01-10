@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -27,18 +28,19 @@ public class ExcursionService {
         Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
         Excursion excursion = excursionMapper.toEntity(excursionDTO);
         if(hotel.isPresent()){
+            excursion.setId(UUID.randomUUID());
             excursion.setHotelId(hotel.get().getId());
             excursionRepository.save(excursion);
             return HttpStatus.CREATED;
         }else return HttpStatus.NOT_FOUND;
     }
 
-    public List<ExcursionDTO> getAllExcursions(String hotelName) throws Exception {
+    public List<ExcursionDTO> getAllExcursions(String hotelName){
         Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
         if(hotel.isPresent()){
             return excursionListMapper.toDTOList(hotel.get().getExcursions());
         }
-        throw new Exception("not found");
+        return null;
     }
 
     public HttpStatus deleteExcursion(String hotelName, String excursionName){
@@ -55,7 +57,7 @@ public class ExcursionService {
         return HttpStatus.NOT_FOUND;
     }
 
-    public HttpStatus updateExcursion(String hotelName, ExcursionDTO excursionDTO)
+    public HttpStatus update(String hotelName, ExcursionDTO excursionDTO)
     {
         Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
         if(hotel.isPresent())
@@ -72,15 +74,15 @@ public class ExcursionService {
     }
 
     public HttpStatus setEnabled(String hotelName,
-                                 String excursionName,
-                                 boolean isEnabled)
+                                 String excursionName)
     {
         Optional<Hotel> opt_hotel = hotelRepository.findByName(hotelName);
         if(opt_hotel.isPresent()){
             Optional<Excursion>  opt_excursion = excursionRepository.
                                         findByHotelIdAndName(opt_hotel.get().getId(), excursionName);
             if(opt_excursion.isPresent()){
-                excursionRepository.save(opt_excursion.get().setEnabled(isEnabled));
+                excursionRepository.save(opt_excursion.get()
+                                            .setEnabled(opt_excursion.get().isEnabled()));
                 return HttpStatus.OK;
             }
         }
