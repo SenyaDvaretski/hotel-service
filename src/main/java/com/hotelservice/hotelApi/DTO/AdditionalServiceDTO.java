@@ -1,14 +1,15 @@
 package com.hotelservice.hotelApi.DTO;
 
-import jakarta.persistence.Id;
 import lombok.Data;
 
 @Data
-public class AdditionalServiceDTO {
+//todo use lombok anntotation
+public class AdditionalServiceDTO implements BaseDTO{
 
+    //todo always add swagger description
     private String name;
     private String type;
     private String description;
-    private double price;
-    private boolean enabled;
+    private Double price;
+    private Boolean enabled;
 }

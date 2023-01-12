@@ -3,7 +3,7 @@ package com.hotelservice.hotelApi.DTO;
 import lombok.Data;
 
 @Data
-public class ExcursionDTO {
+public class ExcursionDTO implements BaseDTO{
 
     private String name;
     private String description;

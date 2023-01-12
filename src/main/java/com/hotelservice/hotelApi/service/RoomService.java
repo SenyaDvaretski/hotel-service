@@ -1,12 +1,12 @@
-package com.hotelservice.hotelApi.services;
+package com.hotelservice.hotelApi.service;
 
 import com.hotelservice.hotelApi.DTO.RoomDTO;
 import com.hotelservice.hotelApi.mappers.RoomListMapper;
 import com.hotelservice.hotelApi.mappers.RoomMapper;
 import com.hotelservice.hotelApi.models.Hotel;
 import com.hotelservice.hotelApi.models.Room;
-import com.hotelservice.hotelApi.repositories.HotelRepository;
-import com.hotelservice.hotelApi.repositories.RoomRepository;
+import com.hotelservice.hotelApi.repository.HotelRepository;
+import com.hotelservice.hotelApi.repository.RoomRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class RoomService {
     private RoomListMapper roomListMapper;
     private RoomMapper roomMapper;
 
-    public HttpStatus addRoom(String hotelName, RoomDTO roomDTO){
+    public HttpStatus add(String hotelName, RoomDTO roomDTO){
         Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
         Room room = roomMapper.toEntity(roomDTO);
         if(hotel.isPresent()){
@@ -46,7 +46,7 @@ public class RoomService {
     }
 
     // create custom exception with http status
-    public RoomDTO getRoom(String hotelName, int number) throws Exception {
+    public RoomDTO get(String hotelName, int number) throws Exception {
         Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
         if(hotel.isPresent()){
             Optional<Room> room = roomRepository.
@@ -77,7 +77,7 @@ public class RoomService {
     }
 
     // probably throw exception with http status instead of just http status
-    public HttpStatus deleteRoom(String hotelName, int number){
+    public HttpStatus delete(String hotelName, int number){
         Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
         if(hotel.isPresent()){
             Optional<Room> room = roomRepository.
@@ -92,7 +92,7 @@ public class RoomService {
     }
 
     // create custom exception with http status
-    public List<RoomDTO> getAllRooms(String hotelName) throws Exception {
+    public List<RoomDTO> getAll(String hotelName) throws Exception {
         Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
         if(hotel.isPresent()){
             return roomListMapper.toDTOList(hotel.get().getRooms());
@@ -100,7 +100,7 @@ public class RoomService {
         throw new Exception("not found");
     }
 
-    public List<RoomDTO> getAllAvailableRooms(String hotelName) throws Exception {
+    public List<RoomDTO> getAllAvailable(String hotelName) throws Exception {
         Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
         if(hotel.isPresent()){
             return roomListMapper.toDTOList(roomRepository.
@@ -109,7 +109,7 @@ public class RoomService {
         throw new Exception("not found");
     }
 
-    public List<RoomDTO> getAllOccupiedRooms(String hotelName) throws Exception {
+    public List<RoomDTO> getAllOccupied(String hotelName) throws Exception {
         Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
         if(hotel.isPresent()){
             return roomListMapper.toDTOList(roomRepository.
@@ -118,12 +118,12 @@ public class RoomService {
         throw new Exception("not found");
     }
 
-    public HttpStatus setRoomAvailable(String hotelName, int roomNumber, boolean freeTag) {
+    public HttpStatus setAvailable(String hotelName, int roomNumber) {
         Optional<Hotel> opt_hotel = hotelRepository.findByName(hotelName);
         if(opt_hotel.isPresent()){
             Optional<Room> opt_room = roomRepository.findByHotelIdAndNumber(opt_hotel.get().getId(),roomNumber);
             if(opt_room.isPresent()){
-                roomRepository.save(opt_room.get().setAvailable(freeTag));
+                roomRepository.save(opt_room.get().setAvailable(!opt_room.get().isAvailable()));
                 return HttpStatus.OK;
             }
         }

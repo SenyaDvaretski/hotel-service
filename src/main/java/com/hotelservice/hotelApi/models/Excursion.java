@@ -1,9 +1,10 @@
 package com.hotelservice.hotelApi.models;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import lombok.*;
+import lombok.Data;
 import lombok.experimental.Accessors;
+
+import javax.persistence.*;
+import javax.validation.constraints.Min;
 import java.util.UUID;
 
 @Entity(name="excursions")
@@ -13,7 +14,7 @@ import java.util.UUID;
 public class Excursion {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @Column(name = "hotel_id")

@@ -1,4 +1,4 @@
-package com.hotelservice.hotelApi.repositories;
+package com.hotelservice.hotelApi.repository;
 
 import com.hotelservice.hotelApi.models.Room;
 import org.springframework.data.jpa.repository.JpaRepository;

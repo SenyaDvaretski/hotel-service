@@ -1,12 +1,12 @@
-package com.hotelservice.hotelApi.services;
+package com.hotelservice.hotelApi.service;
 
 import com.hotelservice.hotelApi.DTO.ExcursionDTO;
 import com.hotelservice.hotelApi.mappers.ExcursionListMapper;
 import com.hotelservice.hotelApi.mappers.ExcursionMapper;
 import com.hotelservice.hotelApi.models.Excursion;
 import com.hotelservice.hotelApi.models.Hotel;
-import com.hotelservice.hotelApi.repositories.ExcursionRepository;
-import com.hotelservice.hotelApi.repositories.HotelRepository;
+import com.hotelservice.hotelApi.repository.ExcursionRepository;
+import com.hotelservice.hotelApi.repository.HotelRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -76,6 +76,8 @@ public class ExcursionService {
     public HttpStatus setEnabled(String hotelName,
                                  String excursionName)
     {
+
+        //todo optHotel
         Optional<Hotel> opt_hotel = hotelRepository.findByName(hotelName);
         if(opt_hotel.isPresent()){
             Optional<Excursion>  opt_excursion = excursionRepository.

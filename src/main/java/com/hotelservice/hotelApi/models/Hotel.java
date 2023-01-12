@@ -1,14 +1,14 @@
 package com.hotelservice.hotelApi.models;
 
 
-import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
 import lombok.experimental.Accessors;
-import java.util.UUID;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity(name = "hotels")
 @Accessors(chain = true)

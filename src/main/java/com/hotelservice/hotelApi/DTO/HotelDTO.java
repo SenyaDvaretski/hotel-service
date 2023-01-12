@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class HotelDTO {
+public class HotelDTO implements BaseDTO{
 
     private String name;
     private String type;

@@ -2,10 +2,9 @@ package com.hotelservice.hotelApi.DTO;
 
 import lombok.Data;
 
-import java.util.UUID;
-
+//todo create one id from number and hotel name instead of CONSTRAINT
 @Data
-public class RoomDTO {
+public class RoomDTO implements BaseDTO{
 
     private int number;
     private String type;

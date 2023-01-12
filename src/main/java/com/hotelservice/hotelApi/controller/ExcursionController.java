@@ -1,7 +1,7 @@
-package com.hotelservice.hotelApi.controllers;
+package com.hotelservice.hotelApi.controller;
 
 import com.hotelservice.hotelApi.DTO.ExcursionDTO;
-import com.hotelservice.hotelApi.services.ExcursionService;
+import com.hotelservice.hotelApi.service.ExcursionService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

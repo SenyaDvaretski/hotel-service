@@ -1,16 +1,17 @@
-package com.hotelservice.hotelApi.services;
+package com.hotelservice.hotelApi.service;
 
 import com.hotelservice.hotelApi.DTO.AdditionalServiceDTO;
 import com.hotelservice.hotelApi.mappers.AdditionalServiceListMapper;
 import com.hotelservice.hotelApi.mappers.AdditionalServiceMapper;
 import com.hotelservice.hotelApi.models.AdditionalService;
 import com.hotelservice.hotelApi.models.Hotel;
-import com.hotelservice.hotelApi.repositories.AdditionalServiceRepository;
-import com.hotelservice.hotelApi.repositories.HotelRepository;
+import com.hotelservice.hotelApi.repository.AdditionalServiceRepository;
+import com.hotelservice.hotelApi.repository.HotelRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,7 +21,6 @@ import java.util.UUID;
 public class AdditionalServiceService {
     public final AdditionalServiceRepository additionalServiceRepository;
     public final HotelRepository hotelRepository;
-
     private AdditionalServiceListMapper additionalServiceListMapper;
     private AdditionalServiceMapper additionalServiceMapper;
 
@@ -43,7 +43,7 @@ public class AdditionalServiceService {
         if(hotel.isPresent()){
             return additionalServiceListMapper.toDTOList(hotel.get().getAdditionalServices());
         }
-        return null;
+        return Collections.emptyList();
     }
 
     public HttpStatus deleteAdditionalService(String hotelName, String additionalServiceName){
@@ -58,6 +58,8 @@ public class AdditionalServiceService {
             return HttpStatus.NOT_FOUND;
         }
         return HttpStatus.NOT_FOUND;
+
+//        additionalServiceRepository.deleteByName(additionalServiceName);
     }
 
     public HttpStatus update(String hotelName, AdditionalServiceDTO additionalServiceDTO)
