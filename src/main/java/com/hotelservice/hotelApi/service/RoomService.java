@@ -1,6 +1,8 @@
 package com.hotelservice.hotelApi.service;
 
 import com.hotelservice.hotelApi.DTO.RoomDTO;
+import com.hotelservice.hotelApi.constant.CommonExceptionStatus;
+import com.hotelservice.hotelApi.exception.CommonException;
 import com.hotelservice.hotelApi.mappers.RoomListMapper;
 import com.hotelservice.hotelApi.mappers.RoomMapper;
 import com.hotelservice.hotelApi.models.Hotel;
@@ -15,15 +17,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-
-/*
-* TODO:
-*   add exceptions:
-*           getAllRooms
-*           deleteRoom
-*           getRoom
-*/
-
 @Service
 @AllArgsConstructor
 public class RoomService {
@@ -34,19 +27,23 @@ public class RoomService {
     private RoomListMapper roomListMapper;
     private RoomMapper roomMapper;
 
-    public HttpStatus add(String hotelName, RoomDTO roomDTO){
+    public RoomDTO addRoom(String hotelName, RoomDTO roomDTO) throws CommonException {
         Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
         Room room = roomMapper.toEntity(roomDTO);
         if(hotel.isPresent()){
             room.setId(UUID.randomUUID());
             room.setHotelId(hotel.get().getId());
             roomRepository.save(room);
-            return HttpStatus.CREATED;
-        }else return HttpStatus.NOT_FOUND;
+            return roomDTO;
+        }
+        else{
+            throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
+                    "Unable to add room: hotel with this name is not found",
+                    HttpStatus.NOT_FOUND);
+        }
     }
 
-    // create custom exception with http status
-    public RoomDTO get(String hotelName, int number) throws Exception {
+    public RoomDTO getRoom(String hotelName, int number) throws CommonException {
         Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
         if(hotel.isPresent()){
             Optional<Room> room = roomRepository.
@@ -54,13 +51,26 @@ public class RoomService {
             if(room.isPresent()){
                 return roomMapper.toDTO(room.get());
             }
-            throw new Exception();
+            throw new CommonException(CommonExceptionStatus.ROOM_NOT_FOUND,
+                                        "Unable to get room: room with this number is not found",
+                                        HttpStatus.NOT_FOUND);
         }
-        throw new Exception();
+        throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
+                                    "Unable to get room: hotel with this name is not found",
+                                    HttpStatus.NOT_FOUND);
     }
 
-    public HttpStatus update(String hotelName, RoomDTO roomDTO)
-    {
+    public List<RoomDTO> getAllRooms(String hotelName) throws CommonException {
+        Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
+        if(hotel.isPresent()){
+            return roomListMapper.toDTOList(hotel.get().getRooms());
+        }
+        throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
+                "Unable to get get all rooms: hotel with this name is not found",
+                HttpStatus.NOT_FOUND);
+    }
+
+    public RoomDTO updateRoom(String hotelName, RoomDTO roomDTO) throws CommonException {
         Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
         if(hotel.isPresent())
         {
@@ -69,65 +79,66 @@ public class RoomService {
             if(room.isPresent())
             {
                 roomMapper.updateRoomFromDTO(roomDTO, room.get());
-                return HttpStatus.OK;
+                return roomDTO;
             }
-
-        }
-        return HttpStatus.NOT_FOUND;
-    }
-
-    // probably throw exception with http status instead of just http status
-    public HttpStatus delete(String hotelName, int number){
-        Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
-        if(hotel.isPresent()){
-            Optional<Room> room = roomRepository.
-                    findByHotelIdAndNumber(hotel.get().getId(), number);
-            if(room.isPresent()){
-                roomRepository.delete(room.get());
-                return HttpStatus.OK;
+            else{
+                throw new CommonException(CommonExceptionStatus.ROOM_NOT_FOUND,
+                        "Unable to update room: room with this number is not found",
+                        HttpStatus.NOT_FOUND);
             }
-            return HttpStatus.NOT_FOUND;
         }
-        return HttpStatus.NOT_FOUND;
+        else{
+            throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
+                    "Unable to update room: hotel with this name is not found",
+                    HttpStatus.NOT_FOUND);
+        }
     }
 
-    // create custom exception with http status
-    public List<RoomDTO> getAll(String hotelName) throws Exception {
-        Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
-        if(hotel.isPresent()){
-            return roomListMapper.toDTOList(hotel.get().getRooms());
-        }
-        throw new Exception("not found");
-    }
-
-    public List<RoomDTO> getAllAvailable(String hotelName) throws Exception {
-        Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
-        if(hotel.isPresent()){
-            return roomListMapper.toDTOList(roomRepository.
-                            findByHotelIdAndAvailableTrue(hotel.get().getId()));
-        }
-        throw new Exception("not found");
-    }
-
-    public List<RoomDTO> getAllOccupied(String hotelName) throws Exception {
-        Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
-        if(hotel.isPresent()){
-            return roomListMapper.toDTOList(roomRepository.
-                    findByHotelIdAndAvailableFalse(hotel.get().getId()));
-        }
-        throw new Exception("not found");
-    }
-
-    public HttpStatus setAvailable(String hotelName, int roomNumber) {
+    public RoomDTO deleteRoom(String hotelName, int number) throws CommonException {
         Optional<Hotel> opt_hotel = hotelRepository.findByName(hotelName);
         if(opt_hotel.isPresent()){
-            Optional<Room> opt_room = roomRepository.findByHotelIdAndNumber(opt_hotel.get().getId(),roomNumber);
+            Optional<Room> opt_room = roomRepository.
+                    findByHotelIdAndNumber(opt_hotel.get().getId(), number);
             if(opt_room.isPresent()){
-                roomRepository.save(opt_room.get().setAvailable(!opt_room.get().isAvailable()));
-                return HttpStatus.OK;
+                roomRepository.delete(opt_room.get());
+                return roomMapper.toDTO(opt_room.get());
             }
+            throw new CommonException(CommonExceptionStatus.ROOM_NOT_FOUND,
+                    "Unable to delete room: room with this number is not found",
+                    HttpStatus.NOT_FOUND);
         }
-        return HttpStatus.NOT_FOUND;
+        throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
+                "Unable to delete room: hotel with this name is not found",
+                HttpStatus.NOT_FOUND);
+    }
+
+    public List<RoomDTO> getAllAvailableRooms(String hotelName, Boolean isAvailable) throws CommonException {
+        Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
+        if(hotel.isPresent()){
+                return roomListMapper.toDTOList(roomRepository.
+                        findByHotelIdAndAvailable(hotel.get().getId(), isAvailable));
+        }
+        throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
+                "Unable to delete room: hotel with this name is not found",
+                HttpStatus.NOT_FOUND);
+    }
+
+    public RoomDTO setRoomAvailable(String hotelName, int roomNumber, Boolean availability) throws CommonException {
+        Optional<Hotel> opt_hotel = hotelRepository.findByName(hotelName);
+        if (opt_hotel.isPresent()) {
+            Optional<Room> opt_room = roomRepository.findByHotelIdAndNumber(opt_hotel.get().getId(), roomNumber);
+            if (opt_room.isPresent()) {
+                opt_room.get().setAvailable(availability);
+                roomRepository.save(opt_room.get());
+                return roomMapper.toDTO(opt_room.get());
+            }
+            throw new CommonException(CommonExceptionStatus.ROOM_NOT_FOUND,
+                    "Unable to set room availability: room with this number is not found",
+                    HttpStatus.NOT_FOUND);
+        }
+        throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
+                "Unable to set room availability: hotel with this name is not found",
+                HttpStatus.NOT_FOUND);
     }
 
 }
