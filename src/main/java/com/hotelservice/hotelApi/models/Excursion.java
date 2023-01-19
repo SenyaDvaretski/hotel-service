@@ -7,7 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import java.util.UUID;
 
-@Entity(name="excursions")
+@Entity(name="excursion")
 @Accessors(chain = true)
 @Data
 

@@ -2,8 +2,6 @@ package com.hotelservice.hotelApi.controller;
 
 import com.hotelservice.hotelApi.DTO.HotelDTO;
 import com.hotelservice.hotelApi.exception.CommonException;
-import com.hotelservice.hotelApi.repository.HotelRepository;
-import com.hotelservice.hotelApi.response.Response;
 import com.hotelservice.hotelApi.service.HotelService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +22,7 @@ public class HotelController {
 //    }
 
     @GetMapping(path = "/{hotel_name}")
-    public ResponseEntity<Response> getHotel(@PathVariable("hotel_name") String hotelName) throws CommonException {
+    public ResponseEntity<HotelDTO> getHotel(@PathVariable("hotel_name") String hotelName) throws CommonException {
         return hotelService.getHotel(hotelName);
     }
 
@@ -45,13 +43,13 @@ public class HotelController {
     }*/
 
     @PostMapping
-    public ResponseEntity<Response> addHotel(@RequestBody HotelDTO hotelDTO)
+    public ResponseEntity<HotelDTO> addHotel(@RequestBody HotelDTO hotelDTO)
     {
-        return hotelService.save(hotelDTO);
+        return hotelService.addHotel(hotelDTO);
     }
 
     @DeleteMapping(path = "/{hotel_name}")
-    public ResponseEntity<Response> deleteHotel(@PathVariable("hotel_name") String hotelName) throws CommonException {
+    public ResponseEntity<HotelDTO> deleteHotel(@PathVariable("hotel_name") String hotelName) throws CommonException {
         return hotelService.delete(hotelName);
     }
 
@@ -68,7 +66,7 @@ public class HotelController {
     }*/
 
     @PutMapping
-    public ResponseEntity<Response> updateHotel(@RequestBody HotelDTO hotelDTO) throws CommonException {
+    public ResponseEntity<HotelDTO> updateHotel(@RequestBody HotelDTO hotelDTO) throws CommonException {
             return hotelService.update(hotelDTO);
     }
 }

@@ -6,11 +6,12 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.factory.Mappers;
 
-@Mapper(componentModel = "spring", uses = {
-        RoomListMapper.class,
-        ExcursionListMapper.class,
-        AdditionalServiceListMapper.class
-})
+@Mapper(componentModel = "spring",
+        uses = {
+            RoomMapper.class,
+            ExcursionMapper.class,
+            AdditionalServiceMapper.class
+        })
 
 public interface HotelMapper {
 
