@@ -1,7 +1,7 @@
 package com.hotelservice.hotelApi.mappers;
 
 import com.hotelservice.hotelApi.DTO.AdditionalServiceDTO;
-import com.hotelservice.hotelApi.models.AdditionalService;
+import com.hotelservice.hotelApi.model.AdditionalService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

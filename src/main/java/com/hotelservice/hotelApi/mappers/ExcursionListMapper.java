@@ -1,7 +1,7 @@
 package com.hotelservice.hotelApi.mappers;
 
 import com.hotelservice.hotelApi.DTO.ExcursionDTO;
-import com.hotelservice.hotelApi.models.Excursion;
+import com.hotelservice.hotelApi.model.Excursion;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

@@ -4,13 +4,18 @@ import com.hotelservice.hotelApi.constant.RoomType;
 import lombok.Data;
 
 import javax.persistence.Column;
-import javax.validation.constraints.*;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 //todo create one id from number and hotel name instead of CONSTRAINT
 @Data
 public class RoomDTO implements BaseDTO{
     @NotNull
     @Min(value = 1)
+    @Column(unique = true)
     private int number;
     @NotNull
     private RoomType type;

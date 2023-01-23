@@ -11,7 +11,6 @@ import javax.validation.constraints.Size;
 //todo use lombok anntotation
 public class AdditionalServiceDTO implements BaseDTO{
 
-    //todo always add swagger description
     @NotBlank
     @Size(max = 40)
     private String name;

@@ -5,7 +5,7 @@ import com.hotelservice.hotelApi.constant.CommonExceptionStatus;
 import com.hotelservice.hotelApi.exception.CommonException;
 import com.hotelservice.hotelApi.mappers.HotelListMapper;
 import com.hotelservice.hotelApi.mappers.HotelMapper;
-import com.hotelservice.hotelApi.models.Hotel;
+import com.hotelservice.hotelApi.model.Hotel;
 import com.hotelservice.hotelApi.repository.HotelRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

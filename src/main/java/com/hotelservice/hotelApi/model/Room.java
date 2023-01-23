@@ -1,9 +1,13 @@
-package com.hotelservice.hotelApi.models;
+package com.hotelservice.hotelApi.model;
 
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import java.util.UUID;

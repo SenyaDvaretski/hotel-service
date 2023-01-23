@@ -1,6 +1,6 @@
 package com.hotelservice.hotelApi.repository;
 
-import com.hotelservice.hotelApi.models.AdditionalService;
+import com.hotelservice.hotelApi.model.AdditionalService;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
