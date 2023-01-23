@@ -20,9 +20,8 @@ public class AdditionalService {
     @Column(name = "hotel_id")
     private UUID hotelId;
     private String name;
-    private String type;
     private String description;
     @Min(value = 0, message = "Price should be positive")
-    private double price;
-    private boolean enabled;
+    private Double price;
+    private Boolean enabled;
 }

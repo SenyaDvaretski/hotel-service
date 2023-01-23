@@ -7,7 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import java.util.UUID;
 
-@Entity(name="excursion")
+@Entity(name="excursions")
 @Accessors(chain = true)
 @Data
 
@@ -22,7 +22,7 @@ public class Excursion {
     private String name;
     private String description;
     @Min(value = 0, message = "Price should be positive")
-    private double price;
-    private boolean enabled;
+    private Double price;
+    private Boolean enabled;
 
 }

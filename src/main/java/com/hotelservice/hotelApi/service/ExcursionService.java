@@ -1,6 +1,8 @@
 package com.hotelservice.hotelApi.service;
 
 import com.hotelservice.hotelApi.DTO.ExcursionDTO;
+import com.hotelservice.hotelApi.constant.CommonExceptionStatus;
+import com.hotelservice.hotelApi.exception.CommonException;
 import com.hotelservice.hotelApi.mappers.ExcursionListMapper;
 import com.hotelservice.hotelApi.mappers.ExcursionMapper;
 import com.hotelservice.hotelApi.models.Excursion;
@@ -24,74 +26,113 @@ public class ExcursionService {
     private ExcursionListMapper excursionListMapper;
     private ExcursionMapper excursionMapper;
 
-    public HttpStatus addExcursion(String hotelName, ExcursionDTO excursionDTO){
-        Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
+    public ExcursionDTO addExcursion(String hotelName, ExcursionDTO excursionDTO) throws CommonException {
+        Optional<Hotel> optHotel = hotelRepository.findHotelByName(hotelName);
         Excursion excursion = excursionMapper.toEntity(excursionDTO);
-        if(hotel.isPresent()){
+        if(optHotel.isPresent()){
             excursion.setId(UUID.randomUUID());
-            excursion.setHotelId(hotel.get().getId());
+            excursion.setHotelId(optHotel.get().getId());
             excursionRepository.save(excursion);
-            return HttpStatus.CREATED;
-        }else return HttpStatus.NOT_FOUND;
-    }
-
-    public List<ExcursionDTO> getAllExcursions(String hotelName){
-        Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
-        if(hotel.isPresent()){
-            return excursionListMapper.toDTOList(hotel.get().getExcursions());
+            return excursionDTO;
         }
-        return null;
+        throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
+                                    "Unable to add new excursion: no hotels with this name found",
+                                    HttpStatus.CONFLICT);
     }
 
-    public HttpStatus deleteExcursion(String hotelName, String excursionName){
-        Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
+    public List<ExcursionDTO> getAllExcursions(String hotelName) throws CommonException {
+        Optional<Hotel> optHotel = hotelRepository.findHotelByName(hotelName);
+        if(optHotel.isPresent()){
+            List<Excursion> excursionsList = excursionRepository.findAllExcursionsByHotelId(optHotel.get().getId());
+            if(!excursionsList.isEmpty()) {
+                return excursionListMapper.toDTOList(excursionsList);
+            }
+            throw new CommonException(CommonExceptionStatus.EXCURSIONS_NOT_FOUND,
+                    "No excursions found",
+                     HttpStatus.NOT_FOUND);
+        }
+        throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
+                "Unable to find all excursions: no hotels with this name found",
+                HttpStatus.NOT_FOUND);
+    }
+
+    public ExcursionDTO getExcursion(String hotelName, String excursionName) throws CommonException {
+        Optional<Hotel> optHotel = hotelRepository.findHotelByName(hotelName);
+        if(optHotel.isPresent()){
+            Optional<Excursion> optExcursion = excursionRepository.
+                    findExcursionByHotelIdAndName(optHotel.get().getId(), excursionName);
+            if(optExcursion.isPresent()){
+                return excursionMapper.toDTO(optExcursion.get());
+            }
+            throw new CommonException(CommonExceptionStatus.ROOM_NOT_FOUND,
+                    "Unable to get excursion: room with this number is not found",
+                    HttpStatus.NOT_FOUND);
+        }
+        throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
+                "Unable to get excursion: hotel with this name is not found",
+                HttpStatus.NOT_FOUND);
+    }
+
+    public ExcursionDTO deleteExcursion(String hotelName, String excursionName) throws CommonException {
+        Optional<Hotel> hotel = hotelRepository.findHotelByName(hotelName);
         if(hotel.isPresent()){
             Optional<Excursion> excursion = excursionRepository.
-                    findByHotelIdAndName(hotel.get().getId(), excursionName);
+                    findExcursionByHotelIdAndName(hotel.get().getId(), excursionName);
             if(excursion.isPresent()){
                 excursionRepository.delete(excursion.get());
-                return HttpStatus.OK;
+                return excursionMapper.toDTO(excursion.get());
             }
-            return HttpStatus.NOT_FOUND;
+            throw new CommonException(CommonExceptionStatus.EXCURSIONS_NOT_FOUND,
+                    "Unable to delete excursion: excursion with ths name not found",
+                    HttpStatus.CONFLICT);
         }
-        return HttpStatus.NOT_FOUND;
+        throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
+                "Unable to delete excursion: no hotels with this name found",
+                HttpStatus.NOT_FOUND);
     }
 
-    public HttpStatus update(String hotelName, ExcursionDTO excursionDTO)
-    {
-        Optional<Hotel> hotel = hotelRepository.findByName(hotelName);
-        if(hotel.isPresent())
+    public ExcursionDTO updateExcursion(String hotelName, ExcursionDTO excursionDTO) throws CommonException {
+        Optional<Hotel> optHotel = hotelRepository.findHotelByName(hotelName);
+        if(optHotel.isPresent())
         {
-            Optional<Excursion> room = excursionRepository.
-                    findByHotelIdAndName(hotel.get().getId(), excursionDTO.getName());
-            if(room.isPresent())
+            Optional<Excursion> optExcursion = excursionRepository.
+                    findExcursionByHotelIdAndName(optHotel.get().getId(), excursionDTO.getName());
+            if(optExcursion.isPresent())
             {
-                excursionMapper.updateExcursionFromDTO(excursionDTO, room.get());
-                return HttpStatus.OK;
+                excursionRepository.delete(optExcursion.get());
+                excursionMapper.updateExcursionFromDTO(excursionDTO, optExcursion.get());
+                excursionRepository.save(optExcursion.get());
+                return excursionMapper.toDTO(optExcursion.get());
             }
+            throw new CommonException(CommonExceptionStatus.EXCURSIONS_NOT_FOUND,
+                    "Unable to update excursion: excursion with ths name not found",
+                    HttpStatus.CONFLICT);
         }
-        return HttpStatus.NOT_FOUND;
+        throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
+                "Unable to update excursion: no hotels with this name found",
+                HttpStatus.NOT_FOUND);
     }
 
-    public HttpStatus setEnabled(String hotelName,
-                                 String excursionName)
-    {
+    public ExcursionDTO setEnabled(String hotelName,
+                                     String excursionName,
+                                     boolean isEnabled) throws CommonException {
 
-        //todo optHotel
-        Optional<Hotel> opt_hotel = hotelRepository.findByName(hotelName);
-        if(opt_hotel.isPresent()){
-            Optional<Excursion>  opt_excursion = excursionRepository.
-                                        findByHotelIdAndName(opt_hotel.get().getId(), excursionName);
-            if(opt_excursion.isPresent()){
-                excursionRepository.save(opt_excursion.get()
-                                            .setEnabled(opt_excursion.get().isEnabled()));
-                return HttpStatus.OK;
+        Optional<Hotel> optHotel = hotelRepository.findHotelByName(hotelName);
+        if(optHotel.isPresent()){
+            Optional<Excursion>  optExcursion = excursionRepository.
+                                        findExcursionByHotelIdAndName(optHotel.get().getId(), excursionName);
+            if(optExcursion.isPresent()){
+                excursionRepository.delete(optExcursion.get());
+                optExcursion.get().setEnabled(isEnabled);
+                excursionRepository.save(optExcursion.get());
+                return excursionMapper.toDTO(optExcursion.get());
             }
+            throw new CommonException(CommonExceptionStatus.EXCURSIONS_NOT_FOUND,
+                    "Unable to set enabled excursion: excursion with ths name not found",
+                    HttpStatus.CONFLICT);
         }
-        return HttpStatus.NOT_FOUND;
-    }
-
-    public void deleteAll(List<Excursion> excursions) {
-        excursionRepository.deleteAll(excursions);
+        throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
+                "Unable to set enable excursion: no hotels with this name found",
+                HttpStatus.NOT_FOUND);
     }
 }

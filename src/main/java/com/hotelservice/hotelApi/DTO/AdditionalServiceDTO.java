@@ -2,14 +2,23 @@ package com.hotelservice.hotelApi.DTO;
 
 import lombok.Data;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 @Data
 //todo use lombok anntotation
 public class AdditionalServiceDTO implements BaseDTO{
 
     //todo always add swagger description
+    @NotBlank
+    @Size(max = 40)
     private String name;
-    private String type;
+    @Size(max = 255)
     private String description;
+    @NotNull
+    @DecimalMin(value = "0", message = "Price should be positive")
     private Double price;
     private Boolean enabled;
 }

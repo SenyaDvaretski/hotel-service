@@ -9,42 +9,31 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping(value = "/hotels")
 @RequiredArgsConstructor
 @FieldDefaults(makeFinal = true, level= AccessLevel.PRIVATE)
-public class HotelController {
+public class HotelController extends BaseController{
     HotelService hotelService;
 
-//    @GetMapping
-//    public ResponseEntity<Iterable<Hotel>> getHotels(){
-//        return //todo response hotelRepository.findAll();
-//    }
+    @GetMapping
+    public ResponseEntity<List<HotelDTO>> getHotels() throws CommonException {
+        return hotelService.getAllHotels();
+    }
 
     @GetMapping(path = "/{hotel_name}")
     public ResponseEntity<HotelDTO> getHotel(@PathVariable("hotel_name") String hotelName) throws CommonException {
         return hotelService.getHotel(hotelName);
     }
 
-
-   /* @PostMapping
-    public HttpStatus addHotels(@RequestBody List<HotelDTO> hotelDTOList)
-    {
-        try
-        {
-            hotelService.saveAll(hotelDTOList);
-            return HttpStatus.CREATED;
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            return HttpStatus.BAD_REQUEST;
-        }
-    }*/
+    @GetMapping(params = "address")
+    public ResponseEntity<List<HotelDTO>> deleteHotelByLocation(@RequestParam("address") String location) throws CommonException {
+        return hotelService.getAllHotelsByAddress(location);
+    }
 
     @PostMapping
-    public ResponseEntity<HotelDTO> addHotel(@RequestBody HotelDTO hotelDTO)
-    {
+    public ResponseEntity<HotelDTO> addHotel(@RequestBody HotelDTO hotelDTO) throws CommonException {
         return hotelService.addHotel(hotelDTO);
     }
 
@@ -53,19 +42,7 @@ public class HotelController {
         return hotelService.delete(hotelName);
     }
 
- /*   @DeleteMapping(params = "address")
-    public ResponseEntity<Response> deleteHotelByLocation(@RequestParam("address") String location)
-    {
-        List<Hotel> hotels = hotelRepository.findByAddress(location);
-        if(!hotels.isEmpty())
-        {
-            hotelService.deleteAll(hotels);
-            return HttpStatus.OK;
-        }
-        return HttpStatus.NOT_FOUND;
-    }*/
-
-    @PutMapping
+    @PatchMapping
     public ResponseEntity<HotelDTO> updateHotel(@RequestBody HotelDTO hotelDTO) throws CommonException {
             return hotelService.update(hotelDTO);
     }
