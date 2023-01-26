@@ -9,13 +9,13 @@ import com.hotelservice.hotelApi.model.AdditionalService;
 import com.hotelservice.hotelApi.model.Hotel;
 import com.hotelservice.hotelApi.repository.AdditionalServiceRepository;
 import com.hotelservice.hotelApi.repository.HotelRepository;
-import com.hotelservice.hotelApi.repository.RoomRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -25,7 +25,6 @@ public class AdditionalServiceService {
     public final HotelRepository hotelRepository;
     private AdditionalServiceListMapper additionalServiceListMapper;
     private AdditionalServiceMapper additionalServiceMapper;
-    private final RoomRepository roomRepository;
 
     public AdditionalServiceDTO addAdditionalService(String hotelName,
                                            AdditionalServiceDTO additionalServiceDTO) throws CommonException {
@@ -136,5 +135,40 @@ public class AdditionalServiceService {
         throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
                 "Unable to update additional service: hotel is not found",
                 HttpStatus.CONFLICT);
+    }
+
+    public AdditionalServiceDTO addTagToAdditionalService(String hotelName, String additionalServiceName, String tag) throws CommonException {
+        Optional<Hotel> optHotel = hotelRepository.findHotelByName(hotelName);
+        if (optHotel.isPresent()){
+            Optional<AdditionalService> optAdditionalService = additionalServiceRepository.
+                                        findByHotelIdAndName(optHotel.get().getId(), additionalServiceName);
+            if(optAdditionalService.isPresent()) {
+                additionalServiceRepository.addTagToAdditionalService(optAdditionalService.get().getId(), tag);
+                return additionalServiceMapper.toDTO(additionalServiceRepository.
+                                        findByHotelIdAndName(optHotel.get().getId(), additionalServiceName).get());
+            }
+            throw new CommonException(CommonExceptionStatus.ROOM_NOT_FOUND,
+                    "Cannot add tag to additional service: additional service with this name doesn't exist",
+                    HttpStatus.NOT_FOUND);
+        }
+        throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
+                "Cannot add tag to additional service: hotel with this name doesn't exist",
+                HttpStatus.NOT_FOUND);
+    }
+
+    public List<AdditionalServiceDTO> getAllAdditionalServicesByHotelNameAndTags(String hotelName, Set<String> tags) throws CommonException {
+        Optional<Hotel> optHotel = hotelRepository.findHotelByName(hotelName);
+        if(optHotel.isPresent()){
+            List<AdditionalService> additionalServiceList = additionalServiceRepository.getAdditionalServicesByHotelIdAndTags(optHotel.get().getId(), tags);
+            if(!additionalServiceList.isEmpty()){
+                return additionalServiceListMapper.toDTOList(additionalServiceList);
+            }
+            throw new CommonException(CommonExceptionStatus.NO_ADDITIONAL_SERVICE_FOUND,
+                    "No additional services with this tags found",
+                    HttpStatus.NOT_FOUND);
+        }
+        throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
+                "No hotels with this name found",
+                HttpStatus.NOT_FOUND);
     }
 }

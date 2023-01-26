@@ -4,12 +4,14 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity(name = "rooms")
@@ -33,5 +35,8 @@ public class Room {
     private Short bedsNumber;
     @DecimalMin(value = "0", message = "Price should be positive")
     private Double price;
+
+    @ElementCollection
+    private Set<String> tags;
 
 }

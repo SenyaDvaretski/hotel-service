@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -133,6 +134,39 @@ public class ExcursionService {
         }
         throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
                 "Unable to set enable excursion: no hotels with this name found",
+                HttpStatus.NOT_FOUND);
+    }
+
+    public ExcursionDTO addTagToExcursion(String hotelName, String excursionName, String tag) throws CommonException {
+        Optional<Hotel> optHotel = hotelRepository.findHotelByName(hotelName);
+        if (optHotel.isPresent()){
+            Optional<Excursion> optExcursion = excursionRepository.findExcursionByHotelIdAndName(optHotel.get().getId(), excursionName);
+            if(optExcursion.isPresent()) {
+                excursionRepository.addTagToExcursion(optExcursion.get().getId(), tag);
+                return excursionMapper.toDTO(excursionRepository.findExcursionByHotelIdAndName(optHotel.get().getId(), excursionName).get());
+            }
+            throw new CommonException(CommonExceptionStatus.EXCURSIONS_NOT_FOUND,
+                    "Cannot add tag to excursion: excursion with this name doesn't exist",
+                    HttpStatus.NOT_FOUND);
+        }
+        throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
+                "Cannot add tag to excursion: hotel with this name doesn't exist",
+                HttpStatus.NOT_FOUND);
+    }
+
+    public List<ExcursionDTO> getAllExcursionsByHotelNameAndTags(String hotelName, Set<String> tags) throws CommonException {
+        Optional<Hotel> optHotel = hotelRepository.findHotelByName(hotelName);
+        if(optHotel.isPresent()){
+            List<Excursion> excursionList = excursionRepository.getExcursionsByHotelIdAndTags(optHotel.get().getId(), tags);
+            if(!excursionList.isEmpty()){
+                return excursionListMapper.toDTOList(excursionList);
+            }
+            throw new CommonException(CommonExceptionStatus.NO_EXCURSIONS_FOUND,
+                    "No excursions with this tags found",
+                    HttpStatus.NOT_FOUND);
+        }
+        throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
+                "No hotels with this name found",
                 HttpStatus.NOT_FOUND);
     }
 }

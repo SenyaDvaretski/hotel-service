@@ -1,6 +1,7 @@
 package com.hotelservice.hotelApi.controller;
 
 import com.hotelservice.hotelApi.DTO.BaseDTO;
+import com.hotelservice.hotelApi.DTO.ExcursionDTO;
 import com.hotelservice.hotelApi.DTO.RoomDTO;
 import com.hotelservice.hotelApi.exception.CommonException;
 import com.hotelservice.hotelApi.service.RoomService;
@@ -22,6 +23,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -66,6 +70,19 @@ public class RoomController extends BaseController{
     public ResponseEntity<BaseDTO> getRoom(@PathVariable("hotel_name") String hotelName,
                                             @PathVariable("room_number") Integer roomNumber) throws CommonException {
         return new ResponseEntity<>(roomService.getRoom(hotelName, roomNumber), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Find all rooms in hotel with this tags")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully found rooms",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ExcursionDTO.class)) }),
+            @ApiResponse(responseCode = "404", description = "No rooms with this tags found",
+                    content = @Content) })
+    @GetMapping(path = "/tags", params = "tags")
+    public ResponseEntity<List<RoomDTO>> getAllRoomsByTags(@PathVariable("hotel_name") String hotelName,
+                                                           @RequestParam("tags") Set<String> tags) throws CommonException {
+        return new ResponseEntity<>(roomService.getAllRoomsByHotelNameAndTags(hotelName, tags), HttpStatus.OK);
     }
 
     @Operation(summary = "Add room by hotel name")
@@ -119,5 +136,19 @@ public class RoomController extends BaseController{
                                                     @PathVariable("room_number") Integer roomNumber,
                                                     @RequestBody Boolean availability) throws CommonException {
         return new ResponseEntity<>(roomService.setRoomAvailable(hotelName, roomNumber, availability), HttpStatus.OK);
+    }
+
+    @Operation(summary = "Add tag to room")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully added tag to room",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ExcursionDTO.class)) }),
+            @ApiResponse(responseCode = "404", description = "Cannot add tag, hotel not found",
+                    content = @Content) })
+    @PatchMapping(path = "/{room_number}", params = "tag")
+    public ResponseEntity<RoomDTO> addTagToRoom(@PathVariable("hotel_name") String hotelName,
+                                                  @PathVariable("room_number") Integer roomNumber,
+                                                  @RequestParam("tag") String tag) throws CommonException {
+        return new ResponseEntity<>(roomService.addTagToRoom(hotelName, roomNumber, tag), HttpStatus.OK);
     }
 }

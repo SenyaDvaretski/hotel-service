@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -34,9 +35,9 @@ public class HotelService {
     }
 
     public ResponseEntity<HotelDTO> getHotel(String name) throws CommonException {
-        Optional<Hotel> hotel = hotelRepository.findHotelByName(name);
-        if(hotel.isPresent()){
-            return new ResponseEntity<>(hotelMapper.toDTO(hotel.get()), HttpStatus.OK);
+        Optional<Hotel> optHotel = hotelRepository.findHotelByName(name);
+        if(optHotel.isPresent()){
+            return new ResponseEntity<>(hotelMapper.toDTO(optHotel.get()), HttpStatus.OK);
         }
         throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND,
                                     "No hotels with this name", HttpStatus.NOT_FOUND);
@@ -61,21 +62,42 @@ public class HotelService {
     }
 
     public ResponseEntity<HotelDTO> delete(String hotelName) throws CommonException {
-        Optional<Hotel> opt_hotel = hotelRepository.findHotelByName(hotelName);
-        if(opt_hotel.isPresent()){
-            hotelRepository.delete(opt_hotel.get());
-            return new ResponseEntity<>(hotelMapper.toDTO(opt_hotel.get()), HttpStatus.OK);
+        Optional<Hotel> optHotel = hotelRepository.findHotelByName(hotelName);
+        if(optHotel.isPresent()){
+            hotelRepository.delete(optHotel.get());
+            return new ResponseEntity<>(hotelMapper.toDTO(optHotel.get()), HttpStatus.OK);
         }
         throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND, "Hotel with such name doesnt exist", HttpStatus.NOT_FOUND);
     }
 
     public ResponseEntity<HotelDTO> update(HotelDTO hotelDTO) throws CommonException {
        // isValidHotel(hotelDTO);
-        Optional<Hotel> opt_hotel = hotelRepository.findHotelByName(hotelDTO.getName());
-        if (opt_hotel.isPresent()){
-            hotelMapper.updateHotelFromDto(hotelDTO, opt_hotel.get());
+        Optional<Hotel> optHotel = hotelRepository.findHotelByName(hotelDTO.getName());
+        if (optHotel.isPresent()){
+            hotelRepository.delete(optHotel.get());
+            hotelMapper.updateHotelFromDto(hotelDTO, optHotel.get());
+            hotelRepository.save(optHotel.get());
             return new ResponseEntity<>(hotelDTO, HttpStatus.OK);
         }
         throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND, "Hotel with such name doesnt exist", HttpStatus.NOT_FOUND);
     }
+
+    public ResponseEntity<HotelDTO> addTagToHotel(String hotelName, String tag) throws CommonException {
+        Optional<Hotel> optHotel = hotelRepository.findHotelByName(hotelName);
+        if (optHotel.isPresent()){
+            hotelRepository.addTagToHotel(optHotel.get().getId(), tag);
+            HotelDTO hotelDTO = hotelMapper.toDTO(hotelRepository.findHotelByName(hotelName).get());
+            return new ResponseEntity<>(hotelDTO, HttpStatus.OK);
+        }
+        throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND, "Cannot add tag: hotel with such name doesnt exist", HttpStatus.NOT_FOUND);
+    }
+
+    public ResponseEntity<List<HotelDTO>> getAllHotelsByTags(Set<String> tags) throws CommonException {
+        List<Hotel> hotels = hotelRepository.getHotelsByTags(tags);
+        if(hotels.isEmpty()){
+            throw new CommonException(CommonExceptionStatus.NO_HOTELS_FOUND, "No hotels with this tags found", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(hotelListMapper.toDTOList(hotels), HttpStatus.OK);
+    }
+
 }

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,7 +39,7 @@ public class HotelController extends BaseController{
             @ApiResponse(responseCode = "404", description = "No hotels found",
                     content = @Content) })
     @GetMapping
-    public ResponseEntity<List<HotelDTO>> getHotels() throws CommonException {
+    public ResponseEntity<List<HotelDTO>> getAllHotels() throws CommonException {
         return hotelService.getAllHotels();
     }
 
@@ -64,6 +65,20 @@ public class HotelController extends BaseController{
     @GetMapping(params = "address")
     public ResponseEntity<List<HotelDTO>> getHotelsByLocation(@RequestParam("address") String location) throws CommonException {
         return hotelService.getAllHotelsByAddress(location);
+    }
+
+
+    //todo try to use RequestBody instead RequestParam
+    @Operation(summary = "Find all hotels with same tags")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully found hotels",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ExcursionDTO.class)) }),
+            @ApiResponse(responseCode = "404", description = "No hotels with this tags found",
+                    content = @Content) })
+    @GetMapping(path = "/tags", params = "tags")
+    public ResponseEntity<List<HotelDTO>> getAllHotelsByTags(@RequestParam("tags") Set<String> tags) throws CommonException {
+        return hotelService.getAllHotelsByTags(tags);
     }
 
     @Operation(summary = "Add hotel")
@@ -101,4 +116,18 @@ public class HotelController extends BaseController{
     public ResponseEntity<HotelDTO> updateHotel(@RequestBody HotelDTO hotelDTO) throws CommonException {
             return hotelService.update(hotelDTO);
     }
+
+    @Operation(summary = "Add tag to hotel")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successfully added tag to hotel",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ExcursionDTO.class)) }),
+            @ApiResponse(responseCode = "404", description = "Cannot add tag, hotel not found",
+                    content = @Content) })
+    @PatchMapping(path = "/{hotel_name}")
+    public ResponseEntity<HotelDTO> addTagToHotel(@PathVariable("hotel_name") String hotelName,
+                                                  @RequestBody String tag) throws CommonException {
+        return hotelService.addTagToHotel(hotelName, tag);
+    }
+
 }

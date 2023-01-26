@@ -6,6 +6,7 @@ import lombok.Data;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
 @Data
 public class HotelDTO implements BaseDTO{
@@ -20,6 +21,11 @@ public class HotelDTO implements BaseDTO{
     @NotBlank
     @Size(max = 255)
     private String address;
+    @NotNull
+    private Set<String> tags;
+
+    //should i add this lists to dto?
+
 //    private List<RoomDTO> rooms = new ArrayList<>();
 //    private List<AdditionalServiceDTO> services = new ArrayList<>();
 //    private List<ExcursionDTO> additionalServices = new ArrayList<>();
