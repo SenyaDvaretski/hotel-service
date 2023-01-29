@@ -30,7 +30,6 @@ public class HotelService {
         Hotel hotel = hotelMapper.toEntity(hotelDTO);
         hotel.setId(UUID.randomUUID());
         hotelRepository.save(hotel);
-        hotelRepository.flush();
         return new ResponseEntity<>(hotelDTO, HttpStatus.OK);
     }
 
@@ -53,7 +52,7 @@ public class HotelService {
     }
 
     public ResponseEntity<List<HotelDTO>> getAllHotelsByAddress(String location) throws CommonException {
-        List<Hotel> hotels = hotelRepository.findHotelByAddress(location);
+        List<Hotel> hotels = hotelRepository.findAllHotelsByAddress(location);
         if(!hotels.isEmpty()){
             return new ResponseEntity<>(hotelListMapper.toDTOList(hotels), HttpStatus.OK);
         }
@@ -61,7 +60,7 @@ public class HotelService {
                 "No hotels with this address found", HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<HotelDTO> delete(String hotelName) throws CommonException {
+    public ResponseEntity<HotelDTO> deleteHotel(String hotelName) throws CommonException {
         Optional<Hotel> optHotel = hotelRepository.findHotelByName(hotelName);
         if(optHotel.isPresent()){
             hotelRepository.delete(optHotel.get());
@@ -70,7 +69,7 @@ public class HotelService {
         throw new CommonException(CommonExceptionStatus.HOTEL_NOT_FOUND, "Hotel with such name doesnt exist", HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<HotelDTO> update(HotelDTO hotelDTO) throws CommonException {
+    public ResponseEntity<HotelDTO> updateHotel(HotelDTO hotelDTO) throws CommonException {
        // isValidHotel(hotelDTO);
         Optional<Hotel> optHotel = hotelRepository.findHotelByName(hotelDTO.getName());
         if (optHotel.isPresent()){
@@ -93,7 +92,7 @@ public class HotelService {
     }
 
     public ResponseEntity<List<HotelDTO>> getAllHotelsByTags(Set<String> tags) throws CommonException {
-        List<Hotel> hotels = hotelRepository.getHotelsByTags(tags);
+        List<Hotel> hotels = hotelRepository.getAllHotelsByTags(tags);
         if(hotels.isEmpty()){
             throw new CommonException(CommonExceptionStatus.NO_HOTELS_FOUND, "No hotels with this tags found", HttpStatus.NOT_FOUND);
         }

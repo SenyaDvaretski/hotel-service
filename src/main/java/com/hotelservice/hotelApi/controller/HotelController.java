@@ -102,7 +102,7 @@ public class HotelController extends BaseController{
                     content = @Content) })
     @DeleteMapping(path = "/{hotel_name}")
     public ResponseEntity<HotelDTO> deleteHotel(@PathVariable("hotel_name") String hotelName) throws CommonException {
-        return hotelService.delete(hotelName);
+        return hotelService.deleteHotel(hotelName);
     }
 
     @Operation(summary = "Update hotel")
@@ -114,7 +114,7 @@ public class HotelController extends BaseController{
                     content = @Content) })
     @PatchMapping
     public ResponseEntity<HotelDTO> updateHotel(@RequestBody HotelDTO hotelDTO) throws CommonException {
-            return hotelService.update(hotelDTO);
+            return hotelService.updateHotel(hotelDTO);
     }
 
     @Operation(summary = "Add tag to hotel")

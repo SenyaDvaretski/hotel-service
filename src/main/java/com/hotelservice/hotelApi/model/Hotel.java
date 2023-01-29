@@ -1,7 +1,10 @@
 package com.hotelservice.hotelApi.model;
 
 
+import com.hotelservice.hotelApi.constant.HotelType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.persistence.CascadeType;
@@ -28,7 +31,7 @@ public class Hotel implements Serializable {
     private UUID id;
 
     private String name;
-    private String type;
+    private HotelType type;
     private String description;
     private String address;
 

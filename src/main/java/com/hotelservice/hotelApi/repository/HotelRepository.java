@@ -19,11 +19,11 @@ public interface HotelRepository extends JpaRepository<Hotel, UUID> {
 
     Optional<Hotel> findHotelById(UUID id);
 
-    List<Hotel> findHotelByAddress(String location);
+    List<Hotel> findAllHotelsByAddress(String location);
 
     @Modifying
     @Query("select hotel from hotels hotel join hotel.tags tag where tag in :tags")
-    List<Hotel> getHotelsByTags(@Param("tags") Set<String> tags);
+    List<Hotel> getAllHotelsByTags(@Param("tags") Set<String> tags);
 
     @Modifying
     @Transactional

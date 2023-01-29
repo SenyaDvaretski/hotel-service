@@ -2,6 +2,7 @@ package com.hotelservice.hotelApi.DTO;
 
 import com.hotelservice.hotelApi.constant.RoomType;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import javax.persistence.Column;
 import javax.validation.constraints.DecimalMin;
@@ -11,7 +12,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
-//todo create one id from number and hotel name instead of CONSTRAINT
+@Accessors(chain = true)
 @Data
 public class RoomDTO implements BaseDTO{
     @NotNull

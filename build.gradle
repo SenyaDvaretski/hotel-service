@@ -26,6 +26,8 @@ dependencies {
 	annotationProcessor "org.projectlombok:lombok-mapstruct-binding:0.2.0"
 	annotationProcessor "org.mapstruct:mapstruct-processor:1.5.3.Final"
 	annotationProcessor "org.projectlombok:lombok:1.18.24"
+	testImplementation group: 'org.mockito', name: 'mockito-core', version: '5.0.0'
+	testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '5.0.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation group: 'org.slf4j', name: 'slf4j-reload4j', version: '2.0.6'
 }
