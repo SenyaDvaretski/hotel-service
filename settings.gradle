@@ -1,1 +1,3 @@
-rootProject.name = 'hotel-service'
+rootProject.name = 'booking-service'
+include 'hotel-service'
+
